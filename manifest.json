@@ -1,0 +1,19 @@
+{
+  "manifest_version": 2,
+
+  "name": "Sec Ext",
+  "description": "Safety assured",
+  "version": "1.0",
+
+  "browser_action": {
+    "default_icon": "images/profile.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [
+    "https://secure.flickr.com/",
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js",
+    "http://code.jquery.com/jquery-1.11.0.min.js",
+    "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css"
+  ]
+
+}
