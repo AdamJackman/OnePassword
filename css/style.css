@@ -10,3 +10,13 @@ img {
   width: 150px;
   height: 150px;
 }
+
+#lenBox { 
+	z-index: 1000;
+	width: 500px;
+	height: auto;
+	vertical-align: middle;
+	border: 2px solid black;
+	float: left;
+	padding: 10px;
+}
