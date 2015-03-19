@@ -215,31 +215,23 @@ function randomNumber(){
 
 
 function calcPass(){
+	//begins the chain of commands to calculate the password
+    requestUserID();
+}
 
-	//Get the user 
+function finishPass(){
 	$("#passOut").val("");
 	var userInp = $("#passIn").val();
-
-    //These are the three variables that are essential to the hashing process
-    // might want to use something like this later for the salt - 
-    //var salt = CryptoJS.lib.WordArray.random(128/8);
-	//alert(site);
-
-    requestUserID();
-    requestSalt();
-    //requestCurrentSite();
-
     var userPass = userInp;
-
     //Create the pass with the salt, the length, and the given password
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
-
     //Check here if any number or symbol needs to be added
-    
+    alert(sizedPass);
     //Place the password in the passOut box
 	$("#passOut").val(sizedPass);
 }
+
 
 function requestSalt(){
 	//sends the current site looking for the specific salt
@@ -258,12 +250,12 @@ function requestSalt(){
 	     // 		alert(response[i])
     		// }
 	        salt = response['salt'];
+	        finishPass();
 	    },
 	    error: function(){
 	    	alert('connection error');
 	    }
     });
-
 }
 
 function requestUserID(){
@@ -275,6 +267,7 @@ function requestUserID(){
 	    success: function(response){
 	        //alert("responded userID:  " + response['userID']);
 	        userID = response['userID'];
+	        requestSalt();
 	    },
 	    error: function(){
 	    	alert('connection error');
