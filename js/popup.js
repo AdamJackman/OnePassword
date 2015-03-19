@@ -242,7 +242,7 @@ function calcPass(){
 }
 
 function requestSalt(){
-
+	//sends the current site looking for the specific salt
 	$.ajax({
 	    type: 'GET',
 	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php?jsoncallback=?",
@@ -252,11 +252,11 @@ function requestSalt(){
 	    },
 	    success: function(response){
 	        //checking functions
-	        alert("responded salt:  " + response['salt']);
-	     	for(var i in response){
-	     		alert(i);
-	     		alert(response[i])
-    		}
+	        //alert("responded salt:  " + response['salt']);
+	     // 	for(var i in response){
+	     // 		alert(i);
+	     // 		alert(response[i])
+    		// }
 	        salt = response['salt'];
 	    },
 	    error: function(){
