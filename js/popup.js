@@ -6,11 +6,15 @@ var userID = 2;
 var username = "Adam";
 var site = "facebook";
 var salt = "default";
+var reqSym = false;
+var reqNum = false;
 
 window.onload = function(){ 
 	// OnLoad setup
     document.getElementById("passBut").onclick = calcPass; 
     document.getElementById("lenset").onclick = setNewLength; 
+	document.getElementById("symset").onclick = setNewSymbReq;
+    document.getElementById("numset").onclick = setNewNumbReq;
 
     //Grab current site
     getCurrentSite();
@@ -19,10 +23,6 @@ window.onload = function(){
     //calcPass();
     
 };
-
-function getLength(){
-
-}
 
 function getCurrentSite(){
 	//alert("currSite");
@@ -78,6 +78,123 @@ function setLength(){
 	alert(len);
 	alert(length);
 
+}
+
+//These functions will be used to force in symbols and numbers if they are missing from the output
+function setNewSymbReq(){
+	var addTo = document.getElementById("mainDiv");
+	//create the elements to enter the length into
+	var lenDiv = document.createElement('div');
+	lenDiv.setAttribute('id', "symBox");
+	lenDiv.setAttribute('class', "Box");
+
+
+	var li1 = document.createElement('li');
+	var li2 = document.createElement('li');
+
+	var lab1 = document.createElement('label');
+	lab1.innerHTML = "Require a Symbol:   ";
+
+	var lab2 = document.createElement('label');
+	lab2.innerHTML = "Do not require a Symbol:   ";
+
+	var radio = document.createElement('input');
+	radio.setAttribute("type", "radio");
+	radio.setAttribute("name", "check");
+	radio.setAttribute('id', "onBut");
+
+	var radio2 = document.createElement('input');
+	radio2.setAttribute("type", "radio");
+	radio2.setAttribute("name", "check");
+	radio2.setAttribute('id', "offBut");
+
+	var lenbut = document.createElement('button');
+	lenbut.setAttribute('id', 'inpBut');
+	lenbut.setAttribute('class', 'btn btn-default navbar-btn pull-right');
+	lenbut.setAttribute('type', 'button');
+	lenbut.innerHTML = "Set New Requirement";
+	lenbut.onclick = setSymbReq;
+
+	//Add the elements
+	$('body').append(lenDiv);
+	lenDiv.appendChild(li1);
+	lenDiv.appendChild(li2);
+	li1.appendChild(radio);
+	li1.appendChild(lab1);
+	li2.appendChild(radio2);
+	li2.appendChild(lab2);
+	
+	
+	lenDiv.appendChild(lenbut);
+}
+
+function setSymbReq(){
+	//Set the variable
+	if(document.getElementById('onBut').checked){
+		reqSym = true;
+	}
+	else{
+		reqSym = false;
+	}
+	//tear down
+	$('#symBox').remove();
+}
+
+function setNewNumbReq(){
+	var addTo = document.getElementById("mainDiv");
+	//create the elements to enter the length into
+	var lenDiv = document.createElement('div');
+	lenDiv.setAttribute('id', "numBox");
+	lenDiv.setAttribute('class', "Box");
+
+	var li1 = document.createElement('li');
+	var li2 = document.createElement('li');
+
+	var lab1 = document.createElement('label');
+	lab1.innerHTML = "Require a Number:   ";
+
+	var lab2 = document.createElement('label');
+	lab2.innerHTML = "Do not require a Number:   ";
+
+	var radio = document.createElement('input');
+	radio.setAttribute("type", "radio");
+	radio.setAttribute("name", "check");
+	radio.setAttribute('id', "onBut");
+
+	var radio2 = document.createElement('input');
+	radio2.setAttribute("type", "radio");
+	radio2.setAttribute("name", "check");
+	radio2.setAttribute('id', "offBut");
+
+	var lenbut = document.createElement('button');
+	lenbut.setAttribute('id', 'inpBut');
+	lenbut.setAttribute('class', 'btn btn-default navbar-btn pull-right');
+	lenbut.setAttribute('type', 'button');
+	lenbut.innerHTML = "Set New Requirement";
+	lenbut.onclick = setNumbReq;
+
+	//Add the elements
+	$('body').append(lenDiv);
+	lenDiv.appendChild(li1);
+	lenDiv.appendChild(li2);
+	li1.appendChild(radio);
+	li1.appendChild(lab1);
+	li2.appendChild(radio2);
+	li2.appendChild(lab2);
+	
+	
+	lenDiv.appendChild(lenbut);
+}
+function setNumbReq(){
+		//Set the variable
+	if(document.getElementById('onBut').checked){
+		reqNum = true;
+	}
+	else{
+		reqNum = false;
+	}
+	//tear down
+	$('#numBox').remove();
 }
 
 function randomSymbol(){
