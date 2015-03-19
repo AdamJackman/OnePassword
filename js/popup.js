@@ -1,10 +1,21 @@
+//Hashing Variables
 var length = 10;
+
+//User Variables
+var userID = 2;
+var username = "Adam";
+var site = "facebook";
+var salt;
 
 window.onload = function(){ 
 	// OnLoad setup
     document.getElementById("passBut").onclick = calcPass; 
     document.getElementById("lenset").onclick = setNewLength; 
 };
+
+function getLength(){
+
+}
 
 function setNewLength(){
 	//Get the div to addTo
@@ -38,25 +49,21 @@ function setNewLength(){
 }
 
 function setLength(){
-	//Might want to do a little more error checking than this
+	//TODO: Add more error checking
 	var lencar =  document.getElementById("inpBox");
-	//var len = lencar.val();
+	//Set the new length
 	var len = $("#inpBox").val();
-	alert(len);
 	if(len>25 || len<1){
 		alert("Invalid length entered");
 	}
 	else{
 		length = len;	
 	}
-	location.href= "";
-	/*
-	lenDiv.remove(lenbut);
-	inpLi.remove(leninp);
-	inpLi.remove(lenLab);	
-	lenDiv.remove(inpLi);
-	$('body').remove(lenDiv);
-	*/
+	//remove the set length box
+	$('#lenBox').remove();
+	alert(len);
+	alert(length);
+
 }
 
 function randomSymbol(){
@@ -69,22 +76,71 @@ function randomSymbol(){
 
 
 function calcPass(){
-	// TODO: Cryptography
-//	var hash = CryptoJS.MD5("Message");
-//	alert(hash);
+
 	$("#passOut").val("");
 	var userInp = $("#passIn").val();
 
     //These are the three variables that are essential to the hashing process
-    // might want to use something like this later for the salt - var salt = CryptoJS.lib.WordArray.random(128/8);
-    var salt = "test";
-    //var length = 10;
+    // might want to use something like this later for the salt - 
+    //var salt = CryptoJS.lib.WordArray.random(128/8);
+   
+    //TEST CODE
+    requestUserID();
+    requestSalt(); 
     var userPass = userInp;
 
     //Create the pass with the salt, the length, and the given password
 
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
-
+    //Place the password in the passOut box
 	$("#passOut").val(sizedPass);
+}
+
+function requestSalt(){
+
+	// var myRequest = new XMLHttpRequest();
+	// myRequest.onreadystatechange=function(){
+	// 	alert(myRequest.responseText);
+	// 	if(myRequest.readyState==4 && myRequest.status==200){
+	// 		alert('success');
+	// 		alert(myRequest.responseText);
+	// 		//temporary response
+	// 		document.getElementById('passOut').innerHTML=myRequest.responseText;
+	// 	}
+	// }
+	// myRequest.open("GET", "http://www.google.com", true);
+	// myRequest.send();
+	// alert('after request');
+
+	var amazURL = "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php";
+	var amazURLcall = "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php?jsoncallback=?"
+
+	$.ajax({
+	    type: 'GET',
+	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php?jsoncallback=?",
+	    success: function(response){
+	        alert("responded salt:  " + response['salt']);
+	        salt = response['salt'];
+	    },
+	    error: function(){
+	    	alert('not good');
+	    }
+    });
+
+}
+
+function requestUserID(){
+	alert("old user ID" + userID)
+	$.ajax({
+	    type: 'GET',
+	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqID.php?jsoncallback=?",
+	    success: function(response){
+	        alert("responded userID:  " + response['userID']);
+	        userID = response['userID'];
+	    },
+	    error: function(){
+	    	alert('not good');
+	    }
+		});
 }

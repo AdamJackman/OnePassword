@@ -10,7 +10,8 @@
     "default_popup": "popup.html"
   },
   "permissions": [
-    "tabs"
+    "tabs",
+    "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php"
   ]
 
 }
