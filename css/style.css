@@ -11,6 +11,16 @@ img {
   height: 150px;
 }
 
+.Box { 
+	z-index: 1000;
+	width: 500px;
+	height: auto;
+	vertical-align: middle;
+	border: 2px solid black;
+	float: left;
+	padding: 10px;
+}
+
 #lenBox { 
 	z-index: 1000;
 	width: 500px;

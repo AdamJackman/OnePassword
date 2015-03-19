@@ -247,8 +247,16 @@ function requestSalt(){
 	    type: 'GET',
 	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php?jsoncallback=?",
 	    timeout: 3000,
+	    data: {
+	    	"site": site
+	    },
 	    success: function(response){
-	        //alert("responded salt:  " + response['salt']);
+	        //checking functions
+	        alert("responded salt:  " + response['salt']);
+	     	for(var i in response){
+	     		alert(i);
+	     		alert(response[i])
+    		}
 	        salt = response['salt'];
 	    },
 	    error: function(){
