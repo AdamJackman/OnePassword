@@ -5,19 +5,30 @@ var length = 10;
 var userID = 2;
 var username = "Adam";
 var site = "facebook";
-var salt;
+var salt = "default";
 
 window.onload = function(){ 
 	// OnLoad setup
     document.getElementById("passBut").onclick = calcPass; 
     document.getElementById("lenset").onclick = setNewLength; 
 
+    //Grab current site
+    getCurrentSite();
     //Might not be needed later
-    calcPass();
+    
+    //calcPass();
+    
 };
 
 function getLength(){
 
+}
+
+function getCurrentSite(){
+	//alert("currSite");
+	chrome.tabs.getSelected(null,function(tab) {
+    site = tab.url;
+	});
 }
 
 function setNewLength(){
@@ -95,7 +106,8 @@ function calcPass(){
     //These are the three variables that are essential to the hashing process
     // might want to use something like this later for the salt - 
     //var salt = CryptoJS.lib.WordArray.random(128/8);
-   
+	//alert(site);
+
     requestUserID();
     requestSalt();
     //requestCurrentSite();
