@@ -11,6 +11,9 @@ window.onload = function(){
 	// OnLoad setup
     document.getElementById("passBut").onclick = calcPass; 
     document.getElementById("lenset").onclick = setNewLength; 
+
+    //Might not be needed later
+    calcPass();
 };
 
 function getLength(){
@@ -74,9 +77,18 @@ function randomSymbol(){
 	return text;
 }
 
+function randomNumber(){
+	//Can be used as a way to retrieve a single random symbol - for symbolic demands
+	possible = "123456789";
+	text = "";
+	text += possible.charAt(Math.floor(Math.random() * possible.length));
+	return text;
+}
+
 
 function calcPass(){
 
+	//Get the user 
 	$("#passOut").val("");
 	var userInp = $("#passIn").val();
 
@@ -84,63 +96,51 @@ function calcPass(){
     // might want to use something like this later for the salt - 
     //var salt = CryptoJS.lib.WordArray.random(128/8);
    
-    //TEST CODE
     requestUserID();
-    requestSalt(); 
+    requestSalt();
+    //requestCurrentSite();
+
     var userPass = userInp;
 
     //Create the pass with the salt, the length, and the given password
-
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
+
+    //Check here if any number or symbol needs to be added
+    
     //Place the password in the passOut box
 	$("#passOut").val(sizedPass);
 }
 
 function requestSalt(){
 
-	// var myRequest = new XMLHttpRequest();
-	// myRequest.onreadystatechange=function(){
-	// 	alert(myRequest.responseText);
-	// 	if(myRequest.readyState==4 && myRequest.status==200){
-	// 		alert('success');
-	// 		alert(myRequest.responseText);
-	// 		//temporary response
-	// 		document.getElementById('passOut').innerHTML=myRequest.responseText;
-	// 	}
-	// }
-	// myRequest.open("GET", "http://www.google.com", true);
-	// myRequest.send();
-	// alert('after request');
-
-	var amazURL = "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php";
-	var amazURLcall = "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php?jsoncallback=?"
-
 	$.ajax({
 	    type: 'GET',
-	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/index.php?jsoncallback=?",
+	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php?jsoncallback=?",
+	    timeout: 3000,
 	    success: function(response){
-	        alert("responded salt:  " + response['salt']);
+	        //alert("responded salt:  " + response['salt']);
 	        salt = response['salt'];
 	    },
 	    error: function(){
-	    	alert('not good');
+	    	alert('connection error');
 	    }
     });
 
 }
 
 function requestUserID(){
-	alert("old user ID" + userID)
+	//alert("old user ID" + userID);
 	$.ajax({
 	    type: 'GET',
 	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqID.php?jsoncallback=?",
+	    timeout: 3000,
 	    success: function(response){
-	        alert("responded userID:  " + response['userID']);
+	        //alert("responded userID:  " + response['userID']);
 	        userID = response['userID'];
 	    },
 	    error: function(){
-	    	alert('not good');
+	    	alert('connection error');
 	    }
 		});
 }
