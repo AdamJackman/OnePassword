@@ -37,6 +37,10 @@ img {
 	padding-bottom: 5px;
 }
 
+.cont {
+	background-image: url("../images/cream_dust_@2x.png");
+}
+
 html{
 	background-image: url("../images/congruent_outline.png");
 }
