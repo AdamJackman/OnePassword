@@ -3,8 +3,8 @@ var length = 10;
 
 //User Variables
 var userID = 2;
-var username = "Adam";
-var site = "facebook";
+var username = "default";
+var site = "default";
 var salt = "default";
 var reqSym = false;
 var reqNum = false;
@@ -227,7 +227,7 @@ function finishPass(){
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
-    alert(sizedPass);
+    //alert(sizedPass);
     //Place the password in the passOut box
 	$("#passOut").val(sizedPass);
 }
@@ -240,7 +240,8 @@ function requestSalt(){
 	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php?jsoncallback=?",
 	    timeout: 3000,
 	    data: {
-	    	"site": site
+	    	"site": site,
+	    	"userID": userID
 	    },
 	    success: function(response){
 	        //checking functions

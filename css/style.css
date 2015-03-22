@@ -19,6 +19,7 @@ img {
 	border: 2px solid black;
 	float: left;
 	padding: 10px;
+
 }
 
 #lenBox { 
@@ -29,4 +30,17 @@ img {
 	border: 2px solid black;
 	float: left;
 	padding: 10px;
+}
+
+#padForm{
+	padding-top: 10px;
+	padding-bottom: 5px;
+}
+
+html{
+	background-image: url("../images/congruent_outline.png");
+}
+
+label, button, input {
+	font-family: 'Raleway', sans-serif;
 }

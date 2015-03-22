@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
+	<link href='http://fonts.googleapis.com/css?family=Raleway' rel='stylesheet' type='text/css'>
 	<link href="css/style.css" rel="stylesheet" type="text/css"/>
 	<!-- Use Bootstrap and jQuery-->
 	<link rel="stylesheet" href="css/bootstrap.min.css">
@@ -14,20 +15,20 @@
 </head>
 <body>
 
-	<div class="">
+	<div class="cont">
 
 		<!-- This is the clickable picture -->
         <div>
           <a href="" class="pull-left">
-            <img src="images/profile.jpg">
+            <img class = "img-rounded" src="images/profile.jpg">
           </a>
         </div>
 
         <!-- Create the drop down menu -->
         <!-- TODO: Decide on functionality, apply functionality -->
-        <nav class = "navbar navbar-default pull-right">
+        <nav class = "pull-right">
 
-        	<div class="container-fluid">
+        	<div class="">
 
 	        	<div class="dropdown">
 				  <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
@@ -38,7 +39,7 @@
 				    <li id="lenset" role="presentation"><a role="menuitem" tabindex="-1" href="#pL">Set Password Length</a></li>
 				    <li id="symset" role="presentation"><a role="menuitem" tabindex="-1" href="#">Require Symbol</a></li>
 				    <li id="numset" role="presentation"><a role="menuitem" tabindex="-1" href="#">Require Number</a></li>
-				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+				    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">More Functionality</a></li>
 				  </ul>
 				</div>
 
@@ -49,22 +50,37 @@
         <!-- Create the input and ouput boxes -->
         <div id="mainDiv" class="">
 
-        	<form name="HashingBox" action="" method="" accept-charset="utf-8">  
+        	<form id="padForm" name="HashingBox" class="form-horizontal" accept-charset="utf-8">
+		        <label class="control-label" for="wPass">Add Your Weak Password</label>  
+		        <div class = "controls">
+		        	<input type="PASSWORD" id="passIn" type="weakPass" name="usermail" placeholder="Your simple password" required>
+		    	</div>
+				
+				<label class= "contrl-label"for="sPass">Unbreakable Password</label>  
+				<div class="controls">
+					<input id="passOut" type="strongPass" name="password" placeholder="Can become unbreakable" required>
+				</div>
+			</form>
+
+        </div>
+
+        <!-- Create the button to hash-->
+        <button id="passBut" type="button" class="btn btn-success navbar-btn pull-right">Convert the Password</button>
+
+</body>
+
+<!-- old form -->
+<!--         	<form name="HashingBox" action="" method="" accept-charset="utf-8">  
    				<ul>
    					<li>  
-				        <label for="wPass">Add Your Weak Password</label>  
-				        <input type="PASSWORD" id="passIn" type="weakPass" name="usermail" placeholder="Your simple password" required>
+				        <label class="control-label" for="wPass">Add Your Weak Password</label>  
+				        <div class = "controls">
+				        	<input type="PASSWORD" id="passIn" type="weakPass" name="usermail" placeholder="Your simple password" required>
+				    	</div>
 			    	</li>  
 			        <li>
 			        	<label for="sPass">Unbreakable Password</label>  
 			        	<input id="passOut" type="strongPass" name="password" placeholder="Can become unbreakable" required>
 			        </li>  
     			</ul>  
-			</form>
-
-        </div>
-
-        <!-- Create the button to hash-->
-        <button id="passBut" type="button" class="btn btn-default navbar-btn pull-right">Convert the Password</button>
-
-</body>
+			</form> -->
