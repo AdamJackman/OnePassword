@@ -37,6 +37,7 @@ function setNewLength(){
 	//create the elements to enter the length into
 	var lenDiv = document.createElement('div');
 	lenDiv.setAttribute('id', "lenBox");
+	lenDiv.setAttribute('class', "Box");
 	var inpLi = document.createElement('li');
 	inpLi.setAttribute('id', "inpLi");
 	var lenLab = document.createElement('label');
@@ -70,8 +71,11 @@ function setLength(){
 	if(len>25 || len<1){
 		alert("Invalid length entered");
 	}
-	else{
+	else if(len>0 && len<26){
 		length = len;	
+	}
+	else{
+		alert("Not a recognised format");
 	}
 	//remove the set length box
 	$('#lenBox').remove();
