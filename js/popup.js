@@ -75,9 +75,6 @@ function setLength(){
 	}
 	//remove the set length box
 	$('#lenBox').remove();
-	alert(len);
-	alert(length);
-
 }
 
 //These functions will be used to force in symbols and numbers if they are missing from the output
