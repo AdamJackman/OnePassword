@@ -11,10 +11,12 @@
   },
   "permissions": [
     "tabs",
+    "storage",
     "http://ec2-54-152-110-181.compute-1.amazonaws.com/*",
     "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php",
     "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqID.php",
     "http://fonts.googleapis.com/*"
+
   ]
 
 }

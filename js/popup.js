@@ -22,12 +22,10 @@ window.onload = function(){
     document.getElementById("lenset").onclick = setNewLength; 
 	document.getElementById("symset").onclick = setNewSymbReq;
     document.getElementById("numset").onclick = setNewNumbReq;
-
+    document.getElementById("userChange").onclick = changeUser;
+    getCurrentUser();
     //Grab current site
     getCurrentSite();
-    //Might not be needed later
-    
-    //calcPass();
     
 };
 
@@ -447,4 +445,60 @@ function getRandomness(sizedPass){
 			alert("connection error");
 		}
 	});
+}
+
+function getCurrentUser(){
+	//Put the usersName in the username and nameHolderBox
+	
+	chrome.storage.local.get('username', function (res){
+		if (!res.username){
+			$("#nameHold").html("unlogged");
+			username=unlogged;
+		}
+		else{
+			$("#nameHold").html(res.username);
+			username=res.username;
+		}
+	});
+}
+
+function changeUser(){
+
+	var alertDiv = document.createElement('div');
+	alertDiv.setAttribute('id', "alerterDiv");
+	alertDiv.setAttribute('class', "alerter");
+	$('body').append(alertDiv);
+
+	var alertLabel = document.createElement('label');
+	alertLabel.setAttribute('id', "alertLabel");
+	alertLabel.innerHTML = "Input your username";
+	alertDiv.appendChild(alertLabel);
+
+	var alertInp = document.createElement('input');
+	alertInp.setAttribute('id', "inpAlert");
+	alertInp.setAttribute('placeholder', "Username");
+	alertDiv.appendChild(alertInp);
+
+	var alertBut = document.createElement('button');
+	alertBut.setAttribute('id', 'alertBut');
+	alertBut.setAttribute('class', 'btn btn-info pull-right');
+	alertBut.setAttribute('type', 'button');
+	alertBut.innerHTML = "Set new Username";
+	alertBut.onclick = changeCurrentUser;
+	alertDiv.appendChild(alertBut);
+
+	//1. get the new userName
+	//2. call the changeCurrentUser with this name
+
+
+}
+
+function changeCurrentUser(uName){
+	var uName = $('#inpAlert').val();
+	chrome.storage.local.set({'username': uName}, function(){
+		$("#nameHold").html(uName);
+		username=uName;
+	});
+	$('#alerterDiv').remove();
+
 }
