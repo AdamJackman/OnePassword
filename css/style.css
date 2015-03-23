@@ -39,6 +39,10 @@ img {
 	padding-bottom: 5px;
 }
 
+#passBut{
+	margin-right: 5px;
+}
+
 .cont {
 	background-image: url("../images/cream_dust_@2x.png");
 }
