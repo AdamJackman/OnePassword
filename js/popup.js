@@ -10,6 +10,12 @@ var salt = "default";
 var reqSym = false;
 var reqNum = false;
 
+//Randomness variables
+var symbolEnforce;
+var symbolEnforcePosition;
+var numberEnforce;
+var numberEnforcePosition;
+
 window.onload = function(){ 
 	// OnLoad setup
     document.getElementById("passBut").onclick = calcPass; 
@@ -255,6 +261,8 @@ function requestSalt(){
 	        	newEntry();
 	        }
 	        else{
+	        	//Set the length of the password
+	        	length = response['len'];
 	        	finishPass();	
 	        }
 	    },
@@ -316,7 +324,7 @@ function newEntry(){
 	// ------------------------------ CREATE THE NEW SALT ---------------------------------
 	var rawsalt = CryptoJS.lib.WordArray.random(128/8);
 	var salt = rawsalt.toString().substring(0,24);
-	
+
 	//Safety Check to avoid infinite loop
 	if (counter > 10) {
 		return;
@@ -338,7 +346,9 @@ function newEntry(){
 		success: function(response){
 			alert("New Site Use Detected - Secure Entry Made");
 			//recall the requestSalt Function
-			requestSalt();
+			// ----------------------------------------------------newRandomness will go in here -------------
+			newRandomness()
+			//requestSalt();
 			counter=0;
 
 		},
@@ -346,11 +356,60 @@ function newEntry(){
 			counter = counter + 1 ;
 		}
 	})
-	
-	
+}
 
+function newRandomness(){
+	//making table entries for the new symbol and new 
+	alert("In new randomness");
+	var nS;
+	var nN;
+	if(reqSym){
+		nS = randomSymbol();
+		if(reqNum){
+			//Need a random num and sym
+			nN = randomNumber();
+		}
+	}
+	else if(reqNum){
+		//need a random num
+		nN = randomNumber();
+	}
+	alert("Populated: " + nS + " is nS and nN is " + nN);
 
-	
+	//create random number between 0 and newSaltLength this will be stored as the place for the character
+	var nSPos;
+	var nNPos;
+	if (nS){
+		nSPos = Math.floor(Math.random() * (newSaltLength+ 1));
+		alert("yes " + nSPos);
+	}
+	if(nN){
+		nNPos = Math.floor(Math.random() * (newSaltLength+ 1));
+		alert("yes " + nNPos);
+	}
+	//all the information is ready to now be sent via ajax
+	$.ajax({
+		type: 'GET',
+		url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/insRan.php?jsoncallback=?",
+		timeout: 3000,
+		data:{
+			"userid": userID,
+			"site": site,
+			"nS": nS,
+			"nN": nN,
+			"nSPos": nSPos,
+			"nNPos": nNPos
+		},
+		success: function(){
+			alert("successful random insert");
+			requestSalt();
+		},
+		error: function(){
+			alert("connection error");
+		}
+	});
+}
 
-
+function getRandomness(){
+	alert("TODO");
 }
