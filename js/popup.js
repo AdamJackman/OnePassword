@@ -2,8 +2,8 @@
 var length = 10;
 
 //User Variables
-var userID = 2;
-var username = "default";
+var userID = 1;
+var username = "adam";
 var site = "default";
 var salt = "default";
 var reqSym = false;
@@ -25,7 +25,6 @@ window.onload = function(){
 };
 
 function getCurrentSite(){
-	//alert("currSite");
 	chrome.tabs.getSelected(null,function(tab) {
     site = tab.url;
 	});
@@ -245,14 +244,14 @@ function requestSalt(){
 	    	"userID": userID
 	    },
 	    success: function(response){
-	        //checking functions
-	        //alert("responded salt:  " + response['salt']);
-	     // 	for(var i in response){
-	     // 		alert(i);
-	     // 		alert(response[i])
-    		// }
 	        salt = response['salt'];
-	        finishPass();
+	        alert("site is: " + site + " salt is: " + salt + " id is: " + userID);
+	        if(response['salt'] == 'none'){
+	        	newEntry();
+	        }
+	        else{
+	        	finishPass();	
+	        }
 	    },
 	    error: function(){
 	    	alert('connection error');
@@ -261,18 +260,36 @@ function requestSalt(){
 }
 
 function requestUserID(){
-	//alert("old user ID" + userID);
 	$.ajax({
 	    type: 'GET',
 	    url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqID.php?jsoncallback=?",
 	    timeout: 3000,
+	    data: {
+	    	"username": username
+	    },
 	    success: function(response){
-	        //alert("responded userID:  " + response['userID']);
-	        userID = response['userID'];
-	        requestSalt();
+	        userID = response['userid'];
+
+	        if(userID == 0){
+	        	//user does not exist
+	        	alert("User not recognised please use options to create a new user");
+	        }
+	        else{
+	        	requestSalt();	
+	        }
 	    },
 	    error: function(){
 	    	alert('connection error');
 	    }
 		});
+}
+
+function newEntry(){
+	alert("new Entry needed");
+
+	//Insert the new Entry into the Database
+
+	//recall the requestSalt Function
+
+	//Perhaps need a counter to check that there is not an infinite loop
 }
