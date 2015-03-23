@@ -235,9 +235,13 @@ function finishPass(){
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
 
-    //alert(sizedPass);
+
+    // ----Could return it and place it here ----
+    // ------ getRandomness(sizedPass) -----
+    getRandomness(sizedPass);
+
     //Place the password in the passOut box
-	$("#passOut").val(sizedPass);
+	//$("#passOut").val(sizedPass);
 }
 
 
@@ -255,8 +259,6 @@ function requestSalt(){
 	        salt = response['salt'];
 	        //alert("site is: " + site + " salt is: " + salt + " id is: " + userID);
 
-	        // ------ MUST ALSO RETRIEVE THE LEN VARIABLE AND PUT IT INT HE LENGTH VARIABLE -------
-
 	        if(response['salt'] == 'none'){
 	        	newEntry();
 	        }
@@ -265,6 +267,10 @@ function requestSalt(){
 	        	length = response['len'];
 	        	finishPass();	
 	        }
+
+	        //set the enforces
+	        symbolEnforce = response['reqsym'];
+	        numberEnforce = response['reqnum'];
 	    },
 	    error: function(){
 	    	alert('connection error');
@@ -307,7 +313,7 @@ function insertUsername(newName){
 		},
 		success: function(response){
 			//Tell the user that everything is done
-			alert("Done");
+			alert("new user added");
 		},
 		error: function(){
 			alert("connection error");
@@ -347,7 +353,7 @@ function newEntry(){
 			alert("New Site Use Detected - Secure Entry Made");
 			//recall the requestSalt Function
 			// ----------------------------------------------------newRandomness will go in here -------------
-			newRandomness()
+			newRandomness();
 			//requestSalt();
 			counter=0;
 
@@ -360,7 +366,6 @@ function newEntry(){
 
 function newRandomness(){
 	//making table entries for the new symbol and new 
-	alert("In new randomness");
 	var nS;
 	var nN;
 	if(reqSym){
@@ -374,18 +379,15 @@ function newRandomness(){
 		//need a random num
 		nN = randomNumber();
 	}
-	alert("Populated: " + nS + " is nS and nN is " + nN);
 
-	//create random number between 0 and newSaltLength this will be stored as the place for the character
+	//create random number between 1 and newSaltLength this will be stored as the place for the character
 	var nSPos;
 	var nNPos;
 	if (nS){
-		nSPos = Math.floor(Math.random() * (newSaltLength+ 1));
-		alert("yes " + nSPos);
+		nSPos = Math.floor(Math.random() * (newSaltLength)) +1;
 	}
 	if(nN){
-		nNPos = Math.floor(Math.random() * (newSaltLength+ 1));
-		alert("yes " + nNPos);
+		nNPos = Math.floor(Math.random() * (newSaltLength)) +1;
 	}
 	//all the information is ready to now be sent via ajax
 	$.ajax({
@@ -401,7 +403,6 @@ function newRandomness(){
 			"nNPos": nNPos
 		},
 		success: function(){
-			alert("successful random insert");
 			requestSalt();
 		},
 		error: function(){
@@ -410,6 +411,48 @@ function newRandomness(){
 	});
 }
 
-function getRandomness(){
-	alert("TODO");
+function getRandomness(sizedPass){
+
+	//1. Check the reqNum and reqSym
+	$.ajax({
+		type: 'GET',
+		url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqRand.php?jsoncallback=?",
+		timeout: 3000,
+		data:{
+			"userid": userID,
+			"site": site
+		},
+		success: function(response){
+			if(symbolEnforce){
+				var rS=response['ranSym'];
+				var rSP = response['ranSymPos'];
+				var sizedPass2 = sizedPass.replace(sizedPass.charAt(rSP-1), rS);
+				if(!numberEnforce){
+					$("#passOut").val(sizedPass2);
+					return;
+				}
+			}
+			if(numberEnforce){
+				var rN = response['ranNum'];
+				var rNP = response['ranNumPos'];
+				if(symbolEnforce && rSP==rNP){
+					rNP = (rNP+1) % length;
+				}
+				if(symbolEnforce){
+					var sizedPass3 = sizedPass2.replace(sizedPass.charAt(rNP-1), rN);
+					$("#passOut").val(sizedPass3);
+					return;
+				}
+				else{
+					var sizedPass2 = sizedPass.replace(sizedPass.charAt(rNP-1), rN);
+					$("#passOut").val(sizedPass2);
+					return;
+				}
+			}
+			$("#passOut").val(sizedPass);
+		},
+		error: function(){
+			alert("connection error");
+		}
+	});
 }
