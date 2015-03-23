@@ -234,14 +234,9 @@ function finishPass(){
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
-
-
-    // ----Could return it and place it here ----
-    // ------ getRandomness(sizedPass) -----
     getRandomness(sizedPass);
-
+    //getRandomness now handles outPut
     //Place the password in the passOut box
-	//$("#passOut").val(sizedPass);
 }
 
 
@@ -351,10 +346,7 @@ function newEntry(){
 		},
 		success: function(response){
 			alert("New Site Use Detected - Secure Entry Made");
-			//recall the requestSalt Function
-			// ----------------------------------------------------newRandomness will go in here -------------
 			newRandomness();
-			//requestSalt();
 			counter=0;
 
 		},
