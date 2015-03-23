@@ -1,5 +1,6 @@
 //Hashing Variables
 var length = 10;
+var newSaltLength = 10;
 
 //User Variables
 var userID = 1;
@@ -71,7 +72,7 @@ function setLength(){
 		alert("Invalid length entered");
 	}
 	else if(len>0 && len<26){
-		length = len;	
+		newSaltLength = len;	
 	}
 	else{
 		alert("Not a recognised format");
@@ -227,6 +228,7 @@ function finishPass(){
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
+
     //alert(sizedPass);
     //Place the password in the passOut box
 	$("#passOut").val(sizedPass);
@@ -245,7 +247,10 @@ function requestSalt(){
 	    },
 	    success: function(response){
 	        salt = response['salt'];
-	        alert("site is: " + site + " salt is: " + salt + " id is: " + userID);
+	        //alert("site is: " + site + " salt is: " + salt + " id is: " + userID);
+
+	        // ------ MUST ALSO RETRIEVE THE LEN VARIABLE AND PUT IT INT HE LENGTH VARIABLE -------
+
 	        if(response['salt'] == 'none'){
 	        	newEntry();
 	        }
@@ -272,7 +277,7 @@ function requestUserID(){
 
 	        if(userID == 0){
 	        	//user does not exist
-	        	alert("User not recognised please use options to create a new user");
+	        	alert("User Not Recognised: Please use the options menu to create a new user");
 	        }
 	        else{
 	        	requestSalt();	
@@ -284,12 +289,68 @@ function requestUserID(){
 		});
 }
 
+function insertUsername(newName){
+	$.ajax({
+		type: 'GET',
+		url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/insUser.php?jsoncallback=?",
+		timeout: 3000,
+		data:{
+			"username": newName
+		},
+		success: function(response){
+			//Tell the user that everything is done
+			alert("Done");
+		},
+		error: function(){
+			alert("connection error");
+		}
+	});
+}
+
+
+//Shouldn't be needed but just as a safety precaution a counter to check that there is not an infinite loop
+var counter = 0;
+
 function newEntry(){
-	alert("new Entry needed");
+
+	// ------------------------------ CREATE THE NEW SALT ---------------------------------
+	var rawsalt = CryptoJS.lib.WordArray.random(128/8);
+	var salt = rawsalt.toString().substring(0,24);
+	
+	//Safety Check to avoid infinite loop
+	if (counter > 10) {
+		return;
+	};
 
 	//Insert the new Entry into the Database
+	$.ajax({
+		type: 'GET',
+		url: "http://ec2-54-152-110-181.compute-1.amazonaws.com/insSalt.php?jsoncallback=?",
+		timeout: 3000,
+		data:{
+			"userID": userID,
+			"site": site,
+			"salt": salt,
+			"len": newSaltLength,
+			"reqSym": reqSym,
+			"reqNum": reqNum
+		},
+		success: function(response){
+			alert("New Site Use Detected - Secure Entry Made");
+			//recall the requestSalt Function
+			requestSalt();
+			counter=0;
 
-	//recall the requestSalt Function
+		},
+		error: function(){
+			counter = counter + 1 ;
+		}
+	})
+	
+	
 
-	//Perhaps need a counter to check that there is not an infinite loop
+
+	
+
+
 }
