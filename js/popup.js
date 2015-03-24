@@ -23,6 +23,7 @@ window.onload = function(){
 	document.getElementById("symset").onclick = setNewSymbReq;
     document.getElementById("numset").onclick = setNewNumbReq;
     document.getElementById("userChange").onclick = changeUser;
+    setupReqs();
     getCurrentUser();
     //Grab current site
     getCurrentSite();
@@ -137,9 +138,11 @@ function setSymbReq(){
 	//Set the variable
 	if(document.getElementById('onBut').checked){
 		reqSym = true;
+		chrome.storage.local.set({'reqSym': true}, function(){});
 	}
 	else{
 		reqSym = false;
+		chrome.storage.local.set({'reqSym': false}, function(){});
 	}
 	//tear down
 	$('#symBox').remove();
@@ -194,9 +197,11 @@ function setNumbReq(){
 		//Set the variable
 	if(document.getElementById('onBut').checked){
 		reqNum = true;
+		chrome.storage.local.set({'reqNum': true}, function(){});
 	}
 	else{
 		reqNum = false;
+		chrome.storage.local.set({'reqNum': false}, function(){});
 	}
 	//tear down
 	$('#numBox').remove();
@@ -415,8 +420,8 @@ function getRandomness(sizedPass){
 		},
 		success: function(response){
 			if(symbolEnforce){
-				var rS=response['ranSym'];
-				var rSP = response['ranSymPos'];
+				alert(rS);
+				alert(rSP);
 				var sizedPass2 = sizedPass.replace(sizedPass.charAt(rSP-1), rS);
 				if(!numberEnforce){
 					$("#passOut").val(sizedPass2);
@@ -511,4 +516,27 @@ function changeCurrentUser(uName){
 	});
 	$('#alerterDiv').remove();
 
+}
+
+function setupReqs(){
+	chrome.storage.local.get('reqSym', function (res){
+		if (!res.reqSym){
+			reqSym=false;
+			//add to the storage
+			chrome.storage.local.set({'reqSym': false}, function(){});
+		}
+		else{
+			reqSym=res.reqSym;
+		}
+	});
+	chrome.storage.local.get('reqNum', function (res){
+		if (!res.reqNum){
+			reqNum=false;
+			//add to the storage
+			chrome.storage.local.set({'reqNum': false}, function(){});
+		}
+		else{
+			reqNum=res.reqNum;
+		}
+	});
 }
