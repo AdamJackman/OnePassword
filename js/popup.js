@@ -284,7 +284,8 @@ function requestUserID(){
 
 	        if(userID == 0){
 	        	//user does not exist
-	        	alert("User Not Recognised: Please use the options menu to create a new user");
+	        	insertUsername(username);
+
 	        }
 	        else{
 	        	requestSalt();	
@@ -306,7 +307,8 @@ function insertUsername(newName){
 		},
 		success: function(response){
 			//Tell the user that everything is done
-			alert("new user added");
+			alert("Welcome new User");
+			requestUserID();
 		},
 		error: function(){
 			alert("connection error");
@@ -369,7 +371,6 @@ function newRandomness(){
 		//need a random num
 		nN = randomNumber();
 	}
-
 	//create random number between 1 and newSaltLength this will be stored as the place for the character
 	var nSPos;
 	var nNPos;
@@ -496,8 +497,6 @@ function changeUser(){
 		$('#alerterDiv').remove();
 	}
 	alertDiv.appendChild(alertCanc);
-
-
 	//1. get the new userName
 	//2. call the changeCurrentUser with this name
 
