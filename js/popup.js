@@ -420,8 +420,8 @@ function getRandomness(sizedPass){
 		},
 		success: function(response){
 			if(symbolEnforce){
-				alert(rS);
-				alert(rSP);
+				var rS=response['ranSym'];
+				var rSP = response['ranSymPos'];
 				var sizedPass2 = sizedPass.replace(sizedPass.charAt(rSP-1), rS);
 				if(!numberEnforce){
 					$("#passOut").val(sizedPass2);
@@ -539,4 +539,14 @@ function setupReqs(){
 			reqNum=res.reqNum;
 		}
 	});
+	// chrome.storage.local.get(('len', function (res){
+	// 	if(!res.len){
+	// 		//default 10
+	// 		length = 10;
+	// 	}
+	// 	else{
+	// 		length = len;
+	// 	}
+	// });
+
 }
