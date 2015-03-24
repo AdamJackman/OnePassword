@@ -25,7 +25,6 @@ window.onload = function(){
     document.getElementById("userChange").onclick = changeUser;
     setupReqs();
     getCurrentUser();
-    //Grab current site
     getCurrentSite();
     
 };
@@ -39,7 +38,6 @@ function getCurrentSite(){
 function setNewLength(){
 	//Get the div to addTo
 	var addTo = document.getElementById("mainDiv");
-	//create the elements to enter the length into
 	var lenDiv = document.createElement('div');
 	lenDiv.setAttribute('id', "lenBox");
 	lenDiv.setAttribute('class', "Box");
@@ -50,16 +48,13 @@ function setNewLength(){
 	lenLab.innerHTML = "Input the desired length";
 	var leninp = document.createElement('input');
 	leninp.setAttribute('id', "inpBox");
-	leninp.setAttribute('placeholder', "1 - 25");
+	leninp.setAttribute('placeholder', "3 - 25");
 	var lenbut = document.createElement('button');
 	lenbut.setAttribute('id', 'inpBut');
 	lenbut.setAttribute('class', 'btn btn-default navbar-btn pull-right');
 	lenbut.setAttribute('type', 'button');
 	lenbut.innerHTML = "Set New Length";
 	lenbut.onclick = setLength;
-
-	//Create the input box in this
-
 	//Append the childen
 	$('body').append(lenDiv);
 	lenDiv.appendChild(inpLi);
@@ -71,16 +66,15 @@ function setNewLength(){
 function setLength(){
 	//TODO: Add more error checking
 	var lencar =  document.getElementById("inpBox");
-	//Set the new length
 	var len = $("#inpBox").val();
-	if(len>25 || len<1){
-		alert("Invalid length entered");
+	if(len>25 || len<3){
+		notifyMessage("Invalid length entered (use 3-25)");
 	}
 	else if(len>0 && len<26){
 		newSaltLength = len;	
 	}
 	else{
-		alert("Not a recognised format");
+		notifyMessage("Not a recognised format");
 	}
 	//remove the set length box
 	$('#lenBox').remove();
@@ -150,7 +144,6 @@ function setSymbReq(){
 
 function setNewNumbReq(){
 	var addTo = document.getElementById("mainDiv");
-	//create the elements to enter the length into
 	var lenDiv = document.createElement('div');
 	lenDiv.setAttribute('id', "numBox");
 	lenDiv.setAttribute('class', "Box");
@@ -194,7 +187,6 @@ function setNewNumbReq(){
 	lenDiv.appendChild(lenbut);
 }
 function setNumbReq(){
-		//Set the variable
 	if(document.getElementById('onBut').checked){
 		reqNum = true;
 		chrome.storage.local.set({'reqNum': true}, function(){});
@@ -203,7 +195,6 @@ function setNumbReq(){
 		reqNum = false;
 		chrome.storage.local.set({'reqNum': false}, function(){});
 	}
-	//tear down
 	$('#numBox').remove();
 }
 
@@ -242,12 +233,10 @@ function finishPass(){
     var userPass = userInp;
     //Create the pass with the salt, the length, and the given password
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32, iterations:1000 });
-
+    //var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32});
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
     getRandomness(sizedPass);
-    //getRandomness now handles outPut
-    //Place the password in the passOut box
 }
 
 
@@ -263,8 +252,6 @@ function requestSalt(){
 	    },
 	    success: function(response){
 	        salt = response['salt'];
-	        //alert("site is: " + site + " salt is: " + salt + " id is: " + userID);
-
 	        if(response['salt'] == 'none'){
 	        	newEntry();
 	        }
@@ -273,17 +260,18 @@ function requestSalt(){
 	        	length = response['len'];
 	        	finishPass();	
 	        }
-
 	        //set the enforces
 	        symbolEnforce = response['reqsym'];
 	        numberEnforce = response['reqnum'];
 	    },
 	    error: function(){
-	    	alert('connection error');
+	    	notifyMessage("connection error");
 	    }
     });
 }
 
+//Made allows an exit from potential infinite looping
+var made = false;
 function requestUserID(){
 	$.ajax({
 	    type: 'GET',
@@ -295,19 +283,20 @@ function requestUserID(){
 	    success: function(response){
 	        userID = response['userid'];
 
-	        if(userID == 0){
+	        if(userID == 0 && !made){
 	        	//user does not exist
 	        	insertUsername(username);
-
+	        	made=true;
 	        }
 	        else{
 	        	requestSalt();	
+	        	made=false;
 	        }
 	    },
 	    error: function(){
-	    	alert('connection error');
+	    	notifyMessage("connection error");
 	    }
-		});
+	});
 }
 
 function insertUsername(newName){
@@ -320,11 +309,11 @@ function insertUsername(newName){
 		},
 		success: function(response){
 			//Tell the user that everything is done
-			alert("Welcome new User");
+			notifyMessage("Welcome to oneWord " + newName);
 			requestUserID();
 		},
 		error: function(){
-			alert("connection error");
+			notifyMessage("connection error");
 		}
 	});
 }
@@ -332,18 +321,14 @@ function insertUsername(newName){
 
 //Shouldn't be needed but just as a safety precaution a counter to check that there is not an infinite loop
 var counter = 0;
-
 function newEntry(){
-
 	// ------------------------------ CREATE THE NEW SALT ---------------------------------
 	var rawsalt = CryptoJS.lib.WordArray.random(128/4);
 	var salt = rawsalt.toString().substring(0,24);
-
 	//Safety Check to avoid infinite loop
 	if (counter > 10) {
 		return;
 	};
-
 	//Insert the new Entry into the Database
 	$.ajax({
 		type: 'GET',
@@ -358,10 +343,12 @@ function newEntry(){
 			"reqNum": reqNum
 		},
 		success: function(response){
-			alert("New Site Use Detected - Secure Entry Made");
+			//alert("New Site Use Detected - Secure Entry Made");
+			notifyNewMessage("New Site Use Detected - Secure Conversion Made");
+
+			//------------------------!@#!@#!@#!#!@#!@#!@#!@#!#!@#!@#!@#!@#---------------------
 			newRandomness();
 			counter=0;
-
 		},
 		error: function(){
 			counter = counter + 1 ;
@@ -370,7 +357,7 @@ function newEntry(){
 }
 
 function newRandomness(){
-	//making table entries for the new symbol and new 
+	//making table entries for the new symbol and new number
 	var nS;
 	var nN;
 	if(reqSym){
@@ -393,6 +380,7 @@ function newRandomness(){
 	if(nN){
 		nNPos = Math.floor(Math.random() * (newSaltLength)) +1;
 	}
+	//capital enforcement
 	var nCPos = Math.floor(Math.random() * (newSaltLength)) +1;
 	var rc = randomCapital();
 	//all the information is ready to now be sent via ajax
@@ -414,13 +402,13 @@ function newRandomness(){
 			requestSalt();
 		},
 		error: function(){
-			alert("connection error");
+			//alert("connection error");
+			notifyMessage("connection error");
 		}
 	});
 }
 
 function getRandomness(sizedPass){
-
 	//1. Check the reqNum and reqSym
 	$.ajax({
 		type: 'GET',
@@ -433,7 +421,6 @@ function getRandomness(sizedPass){
 		success: function(response){
 			var rcP = response['ranCapPos'];
 			var rc = response['ranCap'];
-
 			if(symbolEnforce){
 				var rS=response['ranSym'];
 				var rSP = response['ranSymPos'];
@@ -484,20 +471,19 @@ function getRandomness(sizedPass){
 
 			}
 			//force in a capital
-			//var x = y.replace(y.charAt(rcP-1), rc);
 			var sizedPass2 = sizedPass.replace(sizedPass.charAt(rcP-1), rc);
 			$("#passOut").val(sizedPass2);
 			
 		},
 		error: function(){
-			alert("connection error");
+			//alert("connection error");
+			notifyMessage("connection error");
 		}
 	});
 }
 
 function getCurrentUser(){
-	//Put the usersName in the username and nameHolderBox
-	
+	//Put the usersName in the username and nameHolderBox	
 	chrome.storage.local.get('username', function (res){
 		if (!res.username){
 			$("#nameHold").html("unlogged");
@@ -544,9 +530,6 @@ function changeUser(){
 		$('#alerterDiv').remove();
 	}
 	alertDiv.appendChild(alertCanc);
-	//1. get the new userName
-	//2. call the changeCurrentUser with this name
-
 
 }
 
@@ -590,9 +573,53 @@ function setupReqs(){
 			length = res.len;
 		}
 	});
-
 }
 
 function notifyMessage(msg){
+
+	var alertDiv = document.createElement('div');
+	alertDiv.setAttribute('id', "alerterDiv");
+	alertDiv.setAttribute('class', "alerter");
+	$('body').append(alertDiv);
+
+	var alertLabel = document.createElement('label');
+	alertLabel.setAttribute('id', "alertLabel");
+	alertLabel.innerHTML = msg;
+	alertDiv.appendChild(alertLabel);
+
+	var alertBut = document.createElement('button');
+	alertBut.setAttribute('id', 'noteBut');
+	alertBut.setAttribute('class', 'btn btn-info pull-right');
+	alertBut.setAttribute('type', 'button');
+	alertBut.innerHTML = "Ok";
+	alertBut.onclick = changeCurrentUser;
+	alertBut.onclick = function(){
+		$('#alerterDiv').remove();
+	}
+	alertDiv.appendChild(alertBut);
+
+}
+
+function notifyNewMessage(msg){
+	var alertDiv2 = document.createElement('div');
+	alertDiv2.setAttribute('id', "alerterDiv2");
+	alertDiv2.setAttribute('class', "alerter");
+	$('body').append(alertDiv2);
+
+	var alertLabel = document.createElement('label');
+	alertLabel.setAttribute('id', "alertLabel2");
+	alertLabel.innerHTML = msg;
+	alertDiv2.appendChild(alertLabel);
+
+	var alertBut = document.createElement('button');
+	alertBut.setAttribute('id', 'noteBut2');
+	alertBut.setAttribute('class', 'btn btn-info pull-right');
+	alertBut.setAttribute('type', 'button');
+	alertBut.innerHTML = "Ok";
+	alertBut.onclick = changeCurrentUser;
+	alertBut.onclick = function(){
+		$('#alerterDiv2').remove();
+	}
+	alertDiv2.appendChild(alertBut);
 
 }

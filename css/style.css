@@ -91,3 +91,19 @@ label, button, input {
 	margin-top: 15px;
 	margin-left:3px;
 }
+
+#noteBut{
+	margin-top: 80px;
+	margin-right:20px;
+	position: absolute;
+}
+
+#alertLabel2{
+	padding-top: 30px;
+	padding-left: 30px;
+}
+
+#noteBut2{
+	margin-top: 10px;
+	margin-right: 10px;
+}
