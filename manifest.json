@@ -1,9 +1,10 @@
 {
   "manifest_version": 2,
 
-  "name": "oneWord",
+  "name": "oneWord Password Manager",
   "description": "Safety Assured",
-  "version": "1.0",
+  "version": "1.0.1",
+  "version_name": "1.0 beta",
 
   "browser_action": {
     "default_icon": "images/profile.png",
@@ -16,7 +17,6 @@
     "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqSalt.php",
     "http://ec2-54-152-110-181.compute-1.amazonaws.com/reqID.php",
     "http://fonts.googleapis.com/*"
-
   ]
 
 }
