@@ -2,7 +2,7 @@
   "manifest_version": 2,
 
   "name": "oneWord",
-  "description": "Safety assured",
+  "description": "Safety Assured",
   "version": "1.0",
 
   "browser_action": {

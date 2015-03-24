@@ -223,6 +223,13 @@ function randomNumber(){
 	return text;
 }
 
+function randomCapital(){
+	possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	text="";
+	text+= possible.charAt(Math.floor(Math.random() * possible.length));
+	return text;
+}
+
 
 function calcPass(){
 	//begins the chain of commands to calculate the password
@@ -234,7 +241,38 @@ function finishPass(){
 	var userInp = $("#passIn").val();
     var userPass = userInp;
     //Create the pass with the salt, the length, and the given password
-    var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32 });
+    var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32, iterations:1000 });
+    
+  //   //---TESTING
+  //   //key = CryptoJS.AES.encrypt(key, salt);
+
+  //   //var hash = CryptoJS.HmacSHA256(userPass, salt);
+  // 	//var hashInBase64 = CryptoJS.enc.Base64.stringify(key);
+ 	// //alert(hash);
+ 	// //alert(hashInBase64);
+
+
+ 	// var sizedPassTest = key.toString(CryptoJS.enc.Base64).substring(0,length);
+ 	// alert("64    " + sizedPassTest);
+ 	// alert(typeof key);
+ 	// alert(typeof sizedPassTest);
+
+ 	// var test = CryptoJS.enc.Utf8.parse(key);
+ 	// alert("test" + test);
+ 	// var testStr = test.toString();
+ 	// alert(testStr);
+
+ 	// // var sizedTest = test.toString(CryptoJS.enc.Base64).substring(0,length);
+ 	// // alert("sizedTest " + sizedTest);
+
+ 	// // var str = '';
+ 	// // for (var i = 0; i < key.length; i += 2)
+  // //       str += String.fromCharCode(parseInt(key.toString(CryptoJS.enc.Hex).substr(i, 2), 16));
+  // //   alert ("the tester string is     " + str);
+  //   //---TESTING
+
+
+
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
     getRandomness(sizedPass);
@@ -328,7 +366,7 @@ var counter = 0;
 function newEntry(){
 
 	// ------------------------------ CREATE THE NEW SALT ---------------------------------
-	var rawsalt = CryptoJS.lib.WordArray.random(128/8);
+	var rawsalt = CryptoJS.lib.WordArray.random(128/4);
 	var salt = rawsalt.toString().substring(0,24);
 
 	//Safety Check to avoid infinite loop
@@ -385,6 +423,8 @@ function newRandomness(){
 	if(nN){
 		nNPos = Math.floor(Math.random() * (newSaltLength)) +1;
 	}
+	var nCPos = Math.floor(Math.random() * (newSaltLength)) +1;
+	var rc = randomCapital();
 	//all the information is ready to now be sent via ajax
 	$.ajax({
 		type: 'GET',
@@ -396,7 +436,9 @@ function newRandomness(){
 			"nS": nS,
 			"nN": nN,
 			"nSPos": nSPos,
-			"nNPos": nNPos
+			"nNPos": nNPos,
+			"rc": rc,
+			"rcp": nCPos
 		},
 		success: function(){
 			requestSalt();
@@ -419,12 +461,21 @@ function getRandomness(sizedPass){
 			"site": site
 		},
 		success: function(response){
+			var rcP = response['ranCapPos'];
+			var rc = response['ranCap'];
+
 			if(symbolEnforce){
 				var rS=response['ranSym'];
 				var rSP = response['ranSymPos'];
 				var sizedPass2 = sizedPass.replace(sizedPass.charAt(rSP-1), rS);
 				if(!numberEnforce){
-					$("#passOut").val(sizedPass2);
+					//force in a capital
+					if(rSP == rcP){
+						rcP = (rcP+1) % length;
+					}
+
+					var sizedPassNC = sizedPass2.replace(sizedPass2.charAt(rcP-1), rc);
+					$("#passOut").val(sizedPassNC);
 					return;
 				}
 			}
@@ -436,16 +487,37 @@ function getRandomness(sizedPass){
 				}
 				if(symbolEnforce){
 					var sizedPass3 = sizedPass2.replace(sizedPass.charAt(rNP-1), rN);
-					$("#passOut").val(sizedPass3);
+
+					//force in a capital
+					while(rcP == rNP || rcP == rSP){
+						if(length<3){
+							break;
+						}
+						rcP = (rcP+1) % length;
+					}
+					var sizedPass4 = sizedPass3.replace(sizedPass3.charAt(rcP-1), rc);
+					$("#passOut").val(sizedPass4);
 					return;
 				}
 				else{
 					var sizedPass2 = sizedPass.replace(sizedPass.charAt(rNP-1), rN);
-					$("#passOut").val(sizedPass2);
+
+					//force in a capital
+					if(rNP == rcP){
+						rcP = (rcP+1) % length;
+					}
+					var sizedPassNC2 = sizedPass2.replace(sizedPass2.charAt(rcP-1), rc);
+
+					$("#passOut").val(sizedPassNC2);
 					return;
 				}
+
 			}
-			$("#passOut").val(sizedPass);
+			//force in a capital
+			//var x = y.replace(y.charAt(rcP-1), rc);
+			var sizedPass2 = sizedPass.replace(sizedPass.charAt(rcP-1), rc);
+			$("#passOut").val(sizedPass2);
+			
 		},
 		error: function(){
 			alert("connection error");
@@ -539,14 +611,18 @@ function setupReqs(){
 			reqNum=res.reqNum;
 		}
 	});
-	// chrome.storage.local.get(('len', function (res){
-	// 	if(!res.len){
-	// 		//default 10
-	// 		length = 10;
-	// 	}
-	// 	else{
-	// 		length = len;
-	// 	}
-	// });
+	chrome.storage.local.get('len', function (res){
+		if(!res.len){
+			//default 10
+			length = 10;
+		}
+		else{
+			length = res.len;
+		}
+	});
+
+}
+
+function notifyMessage(msg){
 
 }
