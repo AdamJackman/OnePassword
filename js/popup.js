@@ -242,36 +242,6 @@ function finishPass(){
     var userPass = userInp;
     //Create the pass with the salt, the length, and the given password
     var key = CryptoJS.PBKDF2(userPass, salt, { keySize: 128/32, iterations:1000 });
-    
-  //   //---TESTING
-  //   //key = CryptoJS.AES.encrypt(key, salt);
-
-  //   //var hash = CryptoJS.HmacSHA256(userPass, salt);
-  // 	//var hashInBase64 = CryptoJS.enc.Base64.stringify(key);
- 	// //alert(hash);
- 	// //alert(hashInBase64);
-
-
- 	// var sizedPassTest = key.toString(CryptoJS.enc.Base64).substring(0,length);
- 	// alert("64    " + sizedPassTest);
- 	// alert(typeof key);
- 	// alert(typeof sizedPassTest);
-
- 	// var test = CryptoJS.enc.Utf8.parse(key);
- 	// alert("test" + test);
- 	// var testStr = test.toString();
- 	// alert(testStr);
-
- 	// // var sizedTest = test.toString(CryptoJS.enc.Base64).substring(0,length);
- 	// // alert("sizedTest " + sizedTest);
-
- 	// // var str = '';
- 	// // for (var i = 0; i < key.length; i += 2)
-  // //       str += String.fromCharCode(parseInt(key.toString(CryptoJS.enc.Hex).substr(i, 2), 16));
-  // //   alert ("the tester string is     " + str);
-  //   //---TESTING
-
-
 
     var sizedPass = key.toString().substring(0,length);
     //Check here if any number or symbol needs to be added
