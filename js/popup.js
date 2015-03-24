@@ -487,6 +487,17 @@ function changeUser(){
 	alertBut.onclick = changeCurrentUser;
 	alertDiv.appendChild(alertBut);
 
+	var alertCanc = document.createElement('button');
+	alertCanc.setAttribute('id', 'alertCanc');
+	alertCanc.setAttribute('class', 'btn pull-left');
+	alertCanc.setAttribute('type', 'button');
+	alertCanc.innerHTML = "Cancel"
+	alertCanc.onclick = function(){
+		$('#alerterDiv').remove();
+	}
+	alertDiv.appendChild(alertCanc);
+
+
 	//1. get the new userName
 	//2. call the changeCurrentUser with this name
 
