@@ -7,8 +7,8 @@ var userID = 1;
 var username = "adam";
 var site = "default";
 var salt = "default";
-var reqSym = false;
-var reqNum = false;
+var reqSym = true;
+var reqNum = true;
 
 //Randomness variables
 var symbolEnforce;
@@ -546,7 +546,7 @@ function changeCurrentUser(uName){
 function setupReqs(){
 	chrome.storage.local.get('reqSym', function (res){
 		if (!res.reqSym){
-			reqSym=false;
+			reqSym=true;
 			//add to the storage
 			chrome.storage.local.set({'reqSym': false}, function(){});
 		}
@@ -556,7 +556,7 @@ function setupReqs(){
 	});
 	chrome.storage.local.get('reqNum', function (res){
 		if (!res.reqNum){
-			reqNum=false;
+			reqNum=true;
 			//add to the storage
 			chrome.storage.local.set({'reqNum': false}, function(){});
 		}
