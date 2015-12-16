@@ -14,6 +14,8 @@ NOW AVAILABLE IN TESTING: https://chrome.google.com/webstore/detail/oneword/jndp
 " target="_blank"><img src="http://img.youtube.com/vi/YOIcNt7ufKE/0.jpg" 
 alt="IMAGE ALT TEXT HERE" width="240" height="180" border="10" /></a>
 
+-https://www.youtube.com/watch?feature=player_embedded&v=YOIcNt7ufKE
+
  This demo will demonstrate the basic features of the extension:
 
  In all examples the source word "test" is used. We see that for different sites a different password output is given.
